@@ -3,6 +3,10 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const sequelize = require('./database');
 
+// Importar modelos
+const User = require('./models/User');
+const Product = require('./models/Product');
+
 dotenv.config();
 
 const app = express();
