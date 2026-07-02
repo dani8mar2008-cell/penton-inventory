@@ -1,48 +1,31 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../database');
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   nombre: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false
   },
   email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
   },
   password: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false
   },
   rol: {
-    type: String,
-    enum: ['admin', 'vendedor'],
-    default: 'vendedor',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-// Hash de contraseña antes de guardar
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+    type: DataTypes.STRING,
+    defaultValue: 'user'
   }
+}, {
+  timestamps: true
 });
 
-// Método para comparar contraseñas
-userSchema.methods.comparePassword = async function(passwordIngresada) {
-  return await bcrypt.compare(passwordIngresada, this.password);
-};
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;
